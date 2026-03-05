@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="classic-mode">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
@@ -7,7 +7,8 @@
 <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700;900&family=Rajdhani:wght@400;600;700&display=swap" rel="stylesheet">
 <style>
 *{margin:0;padding:0;box-sizing:border-box;}
-html,body{width:100%;height:100%;overflow:hidden;background:#000;}
+html,body{width:100%;height:100%;overflow:hidden;background:#000;overscroll-behavior:none;}
+
 body{font-family:'Rajdhani',sans-serif;}
 @keyframes spin{to{transform:rotate(360deg);}}
 body::before{content:"";position:fixed;inset:0;
@@ -15,7 +16,8 @@ body::before{content:"";position:fixed;inset:0;
              repeating-linear-gradient(90deg,rgba(0,247,255,.012) 0 1px,transparent 1px 50px);
   pointer-events:none;z-index:9999;}
 #wrap{position:relative;width:100vw;height:100vh;}
-#c3d{position:absolute;inset:0;display:block;width:100%!important;height:100%!important;cursor:crosshair;}
+#c3d{position:absolute;inset:0;display:block;width:100%!important;height:100%!important;cursor:crosshair;touch-action:none; -ms-touch-action:none;}
+
 #hud{position:absolute;inset:0;pointer-events:none;display:block;}
 #hint{position:fixed;bottom:14px;right:14px;z-index:9998;
   font-family:'Orbitron',sans-serif;font-size:9px;color:rgba(0,247,255,.5);
@@ -270,6 +272,166 @@ body::after{content:"";position:fixed;inset:0;pointer-events:none;z-index:9998;
 
 /* Ambient glow pulse on wrap */
 @keyframes ambGlow{0%,100%{opacity:0.4;}50%{opacity:1;}}
+
+/* ─────────────────────────────────────────────────────────────────────────────
+   🎞️ MEDIA SKINS (FLOOR / WALLS / SPHERE)
+   Load ANY Image / GIF / MP4 as textures (local files supported).
+───────────────────────────────────────────────────────────────────────────── */
+#mediaBtn{
+  position:fixed;bottom:18px;left:14px;
+  z-index:9998;font-family:'Orbitron',sans-serif;font-size:9px;
+  color:rgba(255,176,32,.92);background:rgba(18,10,0,.72);
+  border:1px solid rgba(255,176,32,.55);padding:8px 16px;border-radius:20px;
+  cursor:pointer;letter-spacing:2px;user-select:none;text-transform:uppercase;
+  box-shadow:0 0 18px rgba(255,176,32,.22),inset 0 0 10px rgba(255,176,32,.06);
+  transition:all .18s;
+}
+#mediaBtn:hover{
+  background:rgba(55,28,0,.85);
+  box-shadow:0 0 30px rgba(255,176,32,.40),inset 0 0 18px rgba(255,176,32,.10);
+  border-color:rgba(255,176,32,.92);color:#fff;
+  text-shadow:0 0 10px rgba(255,176,32,1);
+}
+#mediaBtn:active{transform:scale(.95);}
+
+
+/* ─────────────────────────────────────────────────────────────
+   ⏸️ PAUSE (RIGHT SIDE) — pauses gameplay anytime
+───────────────────────────────────────────────────────────── */
+#pauseBtn{
+  position:fixed;bottom:18px;right:14px;
+  z-index:9998;font-family:'Orbitron',sans-serif;font-size:9px;
+  color:rgba(255,77,109,.92);background:rgba(22,0,6,.72);
+  border:1px solid rgba(255,77,109,.55);padding:8px 16px;border-radius:20px;
+  cursor:pointer;letter-spacing:2px;user-select:none;text-transform:uppercase;
+  box-shadow:0 0 18px rgba(255,77,109,.18),inset 0 0 10px rgba(255,77,109,.06);
+  transition:all .18s;
+}
+#pauseBtn:hover{
+  background:rgba(60,10,18,.85);
+  box-shadow:0 0 30px rgba(255,77,109,.34),inset 0 0 18px rgba(255,77,109,.10);
+  border-color:rgba(255,77,109,.92);color:#fff;
+  text-shadow:0 0 10px rgba(255,77,109,1);
+}
+#pauseBtn:active{transform:scale(.95);}
+#pauseBtn.on{
+  color:rgba(61,255,138,.95);
+  background:rgba(0,22,10,.72);
+  border-color:rgba(61,255,138,.70);
+  box-shadow:0 0 18px rgba(61,255,138,.18),inset 0 0 10px rgba(61,255,138,.06);
+}
+#pauseBtn.on:hover{
+  background:rgba(0,44,18,.88);
+  border-color:rgba(61,255,138,.92);
+  box-shadow:0 0 34px rgba(61,255,138,.35),inset 0 0 18px rgba(61,255,138,.10);
+  text-shadow:0 0 10px rgba(61,255,138,1);
+}
+
+/* Keep the hint readable and out of the way of the PAUSE button */
+#hint{bottom:64px;}
+
+#mediaPanel{
+  position:fixed;left:14px;bottom:58px;z-index:9998;
+  width:min(92vw, 320px);
+  background:rgba(0,10,18,.84);
+  border:1px solid rgba(0,247,255,.30);
+  border-radius:14px;
+  box-shadow:0 0 26px rgba(0,247,255,.18), inset 0 0 22px rgba(0,247,255,.06);
+  backdrop-filter: blur(10px);
+  padding:12px 12px 10px;
+  display:none;
+}
+#mediaPanel.open{display:block;}
+#mediaPanel .mpTitle{
+  font-family:'Orbitron',sans-serif;
+  font-weight:900;
+  letter-spacing:3px;
+  color:rgba(0,247,255,.92);
+  text-shadow:0 0 18px rgba(0,247,255,.35);
+  font-size:10px;
+  margin-bottom:10px;
+  display:flex;align-items:center;justify-content:space-between;
+}
+#mediaPanel .mpTitle .x{
+  pointer-events:auto;cursor:pointer;
+  color:rgba(255,77,109,.9);
+  border:1px solid rgba(255,77,109,.35);
+  background:rgba(40,0,10,.55);
+  border-radius:10px;
+  padding:5px 10px;
+  font-size:9px;
+  letter-spacing:2px;
+}
+#mediaPanel .mpRow{
+  display:flex;align-items:center;justify-content:space-between;
+  gap:10px;margin-bottom:8px;
+}
+#mediaPanel .mpRow .lbl{
+  font-family:'Orbitron',sans-serif;
+  font-size:9px;letter-spacing:2px;
+  color:rgba(224,250,255,.86);
+  min-width:70px;
+}
+#mediaPanel .mpRow .btns{display:flex;gap:8px;}
+#mediaPanel button.mpBtn{
+  pointer-events:auto;
+  font-family:'Orbitron',sans-serif;
+  font-size:9px;letter-spacing:2px;
+  border-radius:999px;
+  padding:7px 12px;
+  cursor:pointer;
+  text-transform:uppercase;
+  user-select:none;
+  background:rgba(0,0,0,.55);
+  border:1px solid rgba(0,247,255,.35);
+  color:rgba(0,247,255,.9);
+  transition:all .15s;
+}
+#mediaPanel button.mpBtn:hover{
+  background:rgba(0,40,60,.8);
+  border-color:rgba(0,247,255,.9);
+  color:#fff;
+  box-shadow:0 0 18px rgba(0,247,255,.25);
+}
+#mediaPanel button.mpBtn.warn{
+  border-color:rgba(255,77,109,.45);
+  color:rgba(255,77,109,.95);
+}
+#mediaPanel button.mpBtn.warn:hover{
+  background:rgba(60,0,20,.75);
+  border-color:rgba(255,77,109,.95);
+  box-shadow:0 0 18px rgba(255,77,109,.25);
+}
+#mediaPanel .mpNote{
+  margin-top:8px;
+  font-size:9px;
+  line-height:1.35;
+  color:rgba(224,250,255,.62);
+  letter-spacing:0.5px;
+}
+
+
+
+/* ─────────────────────────────────────────────────────────────
+   CLASSIC MODE (NO CYBERPUNK SCREEN FX)
+   Ensures media textures show true colors (no cyan scanlines/CRT).
+───────────────────────────────────────────────────────────── */
+html.classic-mode body::before,
+html.classic-mode body::after{
+  content:none !important;
+  display:none !important;
+  background:none !important;
+  animation:none !important;
+}
+html.classic-mode #rgbSplitOverlay,
+html.classic-mode #plasmaCorners,
+html.classic-mode #warpLines,
+html.classic-mode #epicFlash{
+  display:none !important;
+  opacity:0 !important;
+  animation:none !important;
+}
+
 </style>
 
 </head>
@@ -312,6 +474,34 @@ body::after{content:"";position:fixed;inset:0;pointer-events:none;z-index:9998;
   <div id="cockpitDash" class="active"></div>
 
   <button id="viewToggleBtn" onclick="toggleCamMode()">⚡ COCKPIT VIEW</button>
+  <button id="mediaBtn" onclick="toggleMediaPanel()">🎞️ MEDIA</button>
+  <button id="pauseBtn" aria-pressed="false" onclick="togglePause()">⏸ PAUSE</button>
+  <div id="mediaPanel" aria-hidden="true">
+    <div class="mpTitle"><span>MEDIA SKINS</span><span class="x" onclick="toggleMediaPanel(false)">CLOSE</span></div>
+    <div class="mpRow">
+      <div class="lbl">FLOOR</div>
+      <div class="btns">
+        <button class="mpBtn" onclick="MediaSkins.pick('floor')">UPLOAD</button>
+        <button class="mpBtn warn" onclick="MediaSkins.clear('floor')">CLEAR</button>
+      </div>
+    </div>
+    <div class="mpRow">
+      <div class="lbl">WALLS</div>
+      <div class="btns">
+        <button class="mpBtn" onclick="MediaSkins.pick('walls')">UPLOAD</button>
+        <button class="mpBtn warn" onclick="MediaSkins.clear('walls')">CLEAR</button>
+      </div>
+    </div>
+    <div class="mpRow">
+      <div class="lbl">SPHERE</div>
+      <div class="btns">
+        <button class="mpBtn" onclick="MediaSkins.pick('sphere')">UPLOAD</button>
+        <button class="mpBtn warn" onclick="MediaSkins.clear('sphere')">CLEAR</button>
+      </div>
+    </div>
+    <div class="mpNote">Supports <b>Images</b>, <b>GIF</b>, and <b>MP4</b>. Runs from local files (offline). GIF animation uses <b>gifler</b> (auto-loaded when possible).</div>
+  </div>
+
   <div id="crosshair" class="active">
     <svg viewBox="0 0 60 60" fill="none" xmlns="http://www.w3.org/2000/svg" style="width:60px;height:60px;">
       <circle cx="30" cy="30" r="10" stroke="rgba(0,247,255,0.7)" stroke-width="1.2"/>
@@ -385,6 +575,67 @@ body::after{content:"";position:fixed;inset:0;pointer-events:none;z-index:9998;
     return true;
   }).catch((e)=>{
     console.warn('[CYBRK] THREE failed to load', e);
+    return false;
+  });
+})();
+</script>
+<script>
+/* ─────────────────────────────────────────────────────────────────────────────
+   ASYNC GIFLER LOADER (GIF ANIMATION SUPPORT)
+   Tries CDN then local ./gifler.min.js (offline).
+───────────────────────────────────────────────────────────────────────────── */
+(function(){
+  // If already present, resolve immediately.
+  if(typeof window.gifler === 'function'){
+    window.__cybrk_gifler_ready = Promise.resolve(true);
+    return;
+  }
+  const sources=[
+    'https://unpkg.com/gifler@0.1.0/gifler.min.js',
+    './gifler.min.js'
+  ];
+  const perSourceTimeoutMs=3500;
+
+  function loadScriptWithTimeout(src){
+    return new Promise((resolve,reject)=>{
+      const s=document.createElement('script');
+      s.src=src;
+      s.async=true;
+      let done=false;
+      const t=setTimeout(()=>{
+        if(done) return;
+        done=true;
+        try{s.remove();}catch(e){}
+        reject(new Error('timeout'));
+      }, perSourceTimeoutMs);
+      s.onload=()=>{
+        if(done) return;
+        done=true;
+        clearTimeout(t);
+        resolve(src);
+      };
+      s.onerror=()=>{
+        if(done) return;
+        done=true;
+        clearTimeout(t);
+        try{s.remove();}catch(e){}
+        reject(new Error('error'));
+      };
+      document.head.appendChild(s);
+    });
+  }
+
+  let chain=Promise.reject();
+  for(const src of sources){
+    chain = chain.catch(()=>loadScriptWithTimeout(src));
+  }
+
+  window.__cybrk_gifler_ready = chain.then((src)=>{
+    const ok = (typeof window.gifler === 'function');
+    if(ok) console.log('[CYBRK] gifler loaded from', src);
+    return ok;
+  }).catch((e)=>{
+    console.warn('[CYBRK] gifler failed to load', e);
     return false;
   });
 })();
@@ -1514,6 +1765,9 @@ function createSkyboxTexture(){
 // ═════════════════════════════════════════════════════════════════════════════
 let renderer,scene,camera;
 let skyboxMesh; // panoramic environment sphere
+let arenaFloorMesh=null;
+let arenaBackWallMesh=null;
+let arenaGlassWallMeshes=[];
 const POOL_SIZE=80;
 let brickPool=[];
 let poolPow=[],poolLas=[];
@@ -1540,8 +1794,13 @@ function initThree(){
   renderer.setPixelRatio(Math.min(window.devicePixelRatio||1,1.5));
   renderer.setSize(window.innerWidth,window.innerHeight);
   renderer.setClearColor(0x000208,1);
-  renderer.toneMapping=THREE.ACESFilmicToneMapping;
-  renderer.toneMappingExposure=1.1;
+  // Classic color output (preserve true media colors)
+  try{ renderer.toneMapping = (THREE.NoToneMapping!==undefined) ? THREE.NoToneMapping : THREE.ACESFilmicToneMapping; }catch(e){}
+  renderer.toneMappingExposure=1.0;
+  try{
+    if(THREE.SRGBColorSpace && ('outputColorSpace' in renderer)) renderer.outputColorSpace = THREE.SRGBColorSpace;
+    if(THREE.sRGBEncoding && ('outputEncoding' in renderer)) renderer.outputEncoding = THREE.sRGBEncoding;
+  }catch(e){}
 
   scene=new THREE.Scene();
   // No scene-level fog — it would grey out the vivid skybox
@@ -1577,6 +1836,7 @@ function initThree(){
 
   buildSkybox();
   buildArena();
+  initMediaSkins();
   buildBrickPool();
   buildBall();
   buildTrail();
@@ -1593,8 +1853,8 @@ function initThree(){
 
 // ── CAMERA UPDATE ─────────────────────────────────────────────────────────────
 function updateCamera(){
-  // camPhi > 0 = camera ABOVE arena center (looking down)
-  camPhi=Math.max(0.08,Math.min(0.82,camPhi));
+  // camPhi: elevation angle (positive = above, negative = below)
+  camPhi=Math.max(-1.25,Math.min(1.25,camPhi)); // allow orbit to go under/over the arena
   const sinP=Math.sin(camPhi),cosP=Math.cos(camPhi);
   const sinT=Math.sin(camTheta),cosT=Math.cos(camTheta);
   // Adaptive radius: farther on portrait screens so full arena fits
@@ -1759,6 +2019,7 @@ function buildArena(){
       color:0x010a18,emissive:0x001428,emissiveIntensity:.7,
       metalness:.88,roughness:.32,transparent:true,opacity:.98}));
   flr.rotation.x=-Math.PI/2;flr.position.set(0,-295,-10);scene.add(flr);
+  arenaFloorMesh=flr;
 
   // Floor grid (major lines)
   const gL=[];
@@ -1766,7 +2027,9 @@ function buildArena(){
   for(let z=-360;z<=50;z+=40){gL.push(-440,-293,z, 440,-293,z);}
   const gG=new THREE.BufferGeometry();
   gG.setAttribute('position',new THREE.BufferAttribute(new Float32Array(gL),3));
-  scene.add(new THREE.LineSegments(gG,new THREE.LineBasicMaterial({color:0x003a55,transparent:true,opacity:.55})));
+  const gridMajor=new THREE.LineSegments(gG,new THREE.LineBasicMaterial({color:0x003a55,transparent:true,opacity:.55}));
+  gridMajor.visible=false; // classic: remove floor mesh lines
+  scene.add(gridMajor);
 
   // Floor grid (bright major)
   const bL=[];
@@ -1774,7 +2037,9 @@ function buildArena(){
   for(let z=-360;z<=50;z+=80){bL.push(-440,-292,z, 440,-292,z);}
   const bG=new THREE.BufferGeometry();
   bG.setAttribute('position',new THREE.BufferAttribute(new Float32Array(bL),3));
-  scene.add(new THREE.LineSegments(bG,new THREE.LineBasicMaterial({color:0x00c8ff,transparent:true,opacity:.28})));
+  const gridBright=new THREE.LineSegments(bG,new THREE.LineBasicMaterial({color:0x00c8ff,transparent:true,opacity:.28}));
+  gridBright.visible=false; // classic: remove floor mesh lines
+  scene.add(gridBright);
 
   // Arena wire edges
   const AX=408,AY=295,AZ=22;
@@ -1801,24 +2066,469 @@ function buildArena(){
   mkStrip(new THREE.BoxGeometry(5,594,5),0x00f7ff,[-410,0,0]);
   mkStrip(new THREE.BoxGeometry(5,594,5),0x00f7ff,[410,0,0]);
 
-  // Transparent glass walls
+  // Transparent glass walls (SIDE WALLS ONLY — removes the “extra floating screen” artifact)
+  arenaGlassWallMeshes.length=0;
   const wm=new THREE.MeshStandardMaterial({color:0x001830,emissive:0x002244,emissiveIntensity:.3,
     transparent:true,opacity:.06,side:THREE.DoubleSide});
-  [[new THREE.PlaneGeometry(AZ*2,AY*2),Math.PI/2,[-AX,0,0]],
-   [new THREE.PlaneGeometry(AZ*2,AY*2),-Math.PI/2,[AX,0,0]],
-   [new THREE.PlaneGeometry(AX*2,AZ*2),Math.PI/2,[0,AY,0],[1,0,0,Math.PI/2]]
-  ].forEach(([g,ry,...rest])=>{
-    const m=new THREE.Mesh(g,wm);m.rotation.y=ry;
-    if(rest[0]&&Array.isArray(rest[0]))m.position.set(...rest[0]);
-    else if(rest[0])m.position.set(...rest[0]);
-    scene.add(m);
-  });
+
+  // Left wall (X-)
+  const glassL=new THREE.Mesh(new THREE.PlaneGeometry(AZ*2,AY*2),wm);
+  glassL.rotation.y=Math.PI/2;
+  glassL.position.set(-AX,0,0);
+  scene.add(glassL);
+  arenaGlassWallMeshes.push(glassL);
+
+  // Right wall (X+)
+  const glassR=new THREE.Mesh(new THREE.PlaneGeometry(AZ*2,AY*2),wm);
+  glassR.rotation.y=-Math.PI/2;
+  glassR.position.set(AX,0,0);
+  scene.add(glassR);
+  arenaGlassWallMeshes.push(glassR);
 
   // Back wall
   const bw=new THREE.Mesh(new THREE.PlaneGeometry(820,594),
     new THREE.MeshStandardMaterial({color:0x010912,emissive:0x001530,emissiveIntensity:.5,
       transparent:true,opacity:.92}));
   bw.position.set(0,0,-AZ-2);scene.add(bw);
+  arenaBackWallMesh=bw;
+}
+
+
+// ─────────────────────────────────────────────────────────────────────────────
+// 🎞️ MEDIA SKINS (FLOOR / WALLS / SPHERE) — Image / GIF / Video Textures
+// ─────────────────────────────────────────────────────────────────────────────
+
+function toggleMediaPanel(force){
+  const p=$id('mediaPanel');
+  if(!p) return;
+  const want = (typeof force==='boolean') ? force : !p.classList.contains('open');
+
+  // UI interaction guard: while panel is open (or a file picker is active), ignore game clicks/taps.
+  try{ __mediaPanelOpen = !!want; }catch(e){}
+  if(want){
+    p.classList.add('open');
+    p.setAttribute('aria-hidden','false');
+    uiBlock(650);
+  } else {
+    p.classList.remove('open');
+    p.setAttribute('aria-hidden','true');
+    uiBlock(220);
+  }
+}
+
+// Keep the API on window so buttons can call it safely.
+const MediaSkins = (function(){
+  const SURF = Object.create(null);
+  const MAX_TEX_SIZE = 1024; // safe on mobile; change to 512 if you need more FPS.
+  let inited=false;
+
+  function _makeCanvas(size){
+    const c=document.createElement('canvas');
+    c.width=size; c.height=size;
+    const ctx=c.getContext('2d', {alpha:false});
+    // default fill (keeps texture valid even before media)
+    ctx.fillStyle='#050812';
+    ctx.fillRect(0,0,size,size);
+    return {c,ctx};
+  }
+
+  function _drawCover(ctx, media){
+    const w=ctx.canvas.width, h=ctx.canvas.height;
+    ctx.clearRect(0,0,w,h);
+    // subtle dark base to avoid flashing while video warms up
+    ctx.fillStyle='#050812';
+    ctx.fillRect(0,0,w,h);
+
+    const iw = media.naturalWidth || media.videoWidth || media.width || 0;
+    const ih = media.naturalHeight || media.videoHeight || media.height || 0;
+    if(!iw || !ih) return;
+    const s = Math.max(w/iw, h/ih);
+    const dw = iw*s, dh = ih*s;
+    const dx = (w-dw)/2, dy=(h-dh)/2;
+    try{ ctx.drawImage(media, dx, dy, dw, dh); }catch(e){}
+  }
+
+  function _disposeUrl(url){
+    if(!url) return;
+    try{ URL.revokeObjectURL(url); }catch(e){}
+  }
+
+  function _stopGif(s){
+    if(s.gifAnim && typeof s.gifAnim.stop === 'function'){
+      try{s.gifAnim.stop();}catch(e){}
+    }
+    s.gifAnim=null;
+    s.gifActive=false;
+  }
+
+  function _stopVideo(s){
+    if(s.video){
+      try{ s.video.pause(); }catch(e){}
+      s.video.src='';
+      try{ s.video.load(); }catch(e){}
+    }
+    s.videoActive=false;
+  }
+
+  function _captureOldMaterials(meshes){
+    const old=[];
+    for(const m of meshes){
+      if(!m) continue;
+      old.push([m, m.material]);
+    }
+    return old;
+  }
+
+  function _restoreOldMaterials(s){
+    if(!s || !s.oldMats) return;
+    for(const [m,mat] of s.oldMats){
+      try{ m.material = mat; }catch(e){}
+    }
+    s.applied=false;
+    // Keep floor grid lines hidden (Classic preference)
+    if(s.key==='floor' && s.gridLines && s.gridLines.length){
+      for(const gl of s.gridLines){ try{ gl.visible=false; }catch(e){} }
+    }
+}
+
+  function _applyMaterial(s){
+    if(!s || s.applied) return;
+    if(!s.mat) return;
+    for(const m of s.meshes){
+      try{ m.material = s.mat; }catch(e){}
+    }
+        // Hide floor grid lines when custom floor media is applied
+    if(s.key==='floor' && s.gridLines && s.gridLines.length){
+      for(const gl of s.gridLines){ try{ gl.visible=false; }catch(e){} }
+    }
+s.applied=true;
+  }
+
+  function _clearSurface(key){
+    const s=SURF[key];
+    if(!s) return;
+
+    _stopGif(s);
+    _stopVideo(s);
+    if(s.img){ s.img.src=''; }
+
+    _disposeUrl(s.url);
+    s.url=null;
+    s.kind='none';
+
+    // restore original materials (so default look returns)
+    _restoreOldMaterials(s);
+
+    // reset canvas to dark base (prevents WebGL warnings on some GPUs)
+    try{
+      s.ctx.fillStyle='#050812';
+      s.ctx.fillRect(0,0,s.canvas.width,s.canvas.height);
+      s.tex.needsUpdate=true;
+    }catch(e){}
+  }
+
+  // Hidden media elements (some mobile browsers decode more reliably if element exists)
+  function makeHiddenImg(){
+    const img=document.createElement('img');
+    img.decoding='async'; img.loading='eager';
+    // Keep it in DOM for decode reliability, but NEVER visible.
+    // Offscreen + 1px + fully transparent prevents the "mini vertical screen" artifact on mobile.
+    img.style.cssText='position:fixed;left:-99999px;top:-99999px;width:1px;height:1px;opacity:0;pointer-events:none;z-index:-1;';
+    document.body.appendChild(img);
+    return img;
+  }
+  function makeHiddenVideo(){
+    const v=document.createElement('video');
+    v.muted=true; v.loop=true; v.autoplay=true; v.volume=0;
+    v.controls=false;
+    v.setAttribute('muted',''); v.setAttribute('loop',''); v.setAttribute('autoplay','');
+    v.preload='auto';
+    v.playsInline=true; v.setAttribute('playsinline',''); v.setAttribute('webkit-playsinline','');
+    // Prevent any visible video preview overlays on Android/iOS.
+    v.disablePictureInPicture=true;
+    v.setAttribute('disablepictureinpicture','');
+    v.setAttribute('controlslist','nodownload noplaybackrate noremoteplayback');
+    v.style.cssText='position:fixed;left:-99999px;top:-99999px;width:1px;height:1px;opacity:0;pointer-events:none;z-index:-1;';
+    document.body.appendChild(v);
+    return v;
+  }
+
+  function _makeCanvasTexture(canvas){
+    const tex=new THREE.CanvasTexture(canvas);
+    tex.minFilter=THREE.LinearFilter; tex.magFilter=THREE.LinearFilter;
+    // Color correctness across three versions:
+    try{
+      // Newer three (r152+) uses colorSpace
+      if(THREE.SRGBColorSpace && ('colorSpace' in tex)) tex.colorSpace = THREE.SRGBColorSpace;
+      // Older three (r128) uses encoding
+      if(THREE.sRGBEncoding && ('encoding' in tex)) tex.encoding = THREE.sRGBEncoding;
+    }catch(e){}
+    return tex;
+  }
+
+  function _findFloorGridLines(){
+    const out=[];
+    try{
+      if(typeof scene==='undefined' || !scene || typeof scene.traverse!=='function') return out;
+      scene.traverse(o=>{
+        try{
+          if(!o || o.type!=='LineSegments') return;
+          const mat=o.material;
+          if(!mat || !mat.color || !o.geometry || !o.geometry.attributes || !o.geometry.attributes.position) return;
+          const hex = (typeof mat.color.getHex==='function') ? mat.color.getHex() : null;
+          if(hex!==0x003a55 && hex!==0x00c8ff) return;
+          const arr = o.geometry.attributes.position.array;
+          if(!arr || arr.length<2) return;
+          const y = arr[1];
+          if(Math.abs(y+293)>3 && Math.abs(y+292)>3) return;
+          out.push(o);
+        }catch(e){}
+      });
+    }catch(e){}
+    return out;
+  }
+
+  function _initSurfaces(){
+    const size = MAX_TEX_SIZE;
+
+    // FLOOR
+    (function(){
+      const {c,ctx}=_makeCanvas(size);
+      const tex=_makeCanvasTexture(c);
+      const meshes=[arenaFloorMesh].filter(Boolean);
+      SURF.floor = {
+        key:'floor',
+        gridLines:[],
+        meshes,
+        oldMats:_captureOldMaterials(meshes),
+        applied:false,
+        canvas:c,ctx,tex,
+        mat:(function(){const m=new THREE.MeshBasicMaterial({map:tex,color:0xffffff,transparent:false,opacity:1,side:THREE.DoubleSide});m.toneMapped=false;return m;})(),
+        input:null,img:makeHiddenImg(),video:makeHiddenVideo(),
+        kind:'none',url:null,gifAnim:null,gifActive:false,videoActive:false,
+        lastUpd:0
+      };
+    })();
+
+    try{ SURF.floor.gridLines = _findFloorGridLines(); }catch(e){}
+    // Classic: never show the floor grid mesh lines
+    try{ for(const gl of (SURF.floor.gridLines||[])){ if(gl) gl.visible=false; } }catch(e){}
+
+
+    // WALLS (glass walls + back wall)
+    (function(){
+      const {c,ctx}=_makeCanvas(size);
+      const tex=_makeCanvasTexture(c);
+      const meshes=[arenaBackWallMesh, ...(arenaGlassWallMeshes||[])].filter(Boolean);
+      SURF.walls = {
+        key:'walls',
+        meshes,
+        oldMats:_captureOldMaterials(meshes),
+        applied:false,
+        canvas:c,ctx,tex,
+        mat:(function(){const m=new THREE.MeshBasicMaterial({map:tex,color:0xffffff,transparent:false,opacity:1,side:THREE.DoubleSide});m.toneMapped=false;return m;})(),
+        input:null,img:makeHiddenImg(),video:makeHiddenVideo(),
+        kind:'none',url:null,gifAnim:null,gifActive:false,videoActive:false,
+        lastUpd:0
+      };
+    })();
+
+    // SPHERE (skybox)
+    (function(){
+      const {c,ctx}=_makeCanvas(size);
+      const tex=_makeCanvasTexture(c);
+      const meshes=[skyboxMesh].filter(Boolean);
+      SURF.sphere = {
+        key:'sphere',
+        meshes,
+        oldMats:_captureOldMaterials(meshes),
+        applied:false,
+        canvas:c,ctx,tex,
+        mat:(function(){
+          const m=new THREE.MeshBasicMaterial({ map:tex,color:0xffffff,side:THREE.BackSide,fog:false,depthWrite:false });
+          m.toneMapped=false;
+          return m;
+        })(),
+        input:null,img:makeHiddenImg(),video:makeHiddenVideo(),
+        kind:'none',url:null,gifAnim:null,gifActive:false,videoActive:false,
+        lastUpd:0
+      };
+    })();
+
+    // Shared file inputs (one per surface) so mobile file pick works reliably.
+    for(const key of Object.keys(SURF)){
+      const inp=document.createElement('input');
+      inp.type='file';
+      inp.setAttribute('data-media-skin-input','1');
+      inp.setAttribute('aria-hidden','true');
+      inp.tabIndex=-1;
+      inp.accept='image/*,video/mp4,video/webm,video/*';
+      inp.style.cssText='position:fixed;left:-9999px;top:-9999px;opacity:0;';
+      document.body.appendChild(inp);
+      SURF[key].input=inp;
+
+      inp.addEventListener('change', ()=>{
+        const f = inp.files && inp.files[0];
+        // reset input so selecting the same file twice still triggers change
+        inp.value='';
+        if(!f) return;
+        try{ __mediaPicking=false; uiBlock(900); }catch(e){}
+        loadFileToSurface(key, f);
+      }, {passive:true});
+    }
+  }
+
+  function init(){
+    if(inited) return;
+    inited=true;
+    _initSurfaces();
+  }
+
+  function pick(key){
+    const s=SURF[key];
+    if(!s || !s.input) return;
+
+    // Mobile file picker can emit ghost clicks / focus events.
+    // Mark as picking and block game input until the picker returns.
+    try{ __mediaPicking=true; }catch(e){}
+    try{ if(typeof uiBlock==='function') uiBlock(2200); }catch(e){}
+
+    try{ s.input.click(); }catch(e){}
+  }
+
+  function clear(key){
+    _clearSurface(key);
+  }
+
+  function loadFileToSurface(key, file){
+    const s=SURF[key];
+    if(!s) return;
+
+    // Stop prior media and free previous URL
+    _stopGif(s);
+    _stopVideo(s);
+    _disposeUrl(s.url);
+
+    s.url = URL.createObjectURL(file);
+    const type=(file.type||'').toLowerCase();
+    const name=(file.name||'').toLowerCase();
+    const isVid = type.startsWith('video/');
+    const isGif = (type==='image/gif') || name.endsWith('.gif');
+
+    // IMPORTANT: apply our material only once user chooses media
+    _applyMaterial(s);
+
+    if(isVid){
+      s.kind='video';
+      s.videoActive=true;
+
+      const v=s.video;
+      v.src=s.url;
+
+      // Kick playback; some browsers require the file selection gesture (which we have).
+      const tryPlay=()=>{
+        try{
+          const p=v.play();
+          if(p && typeof p.catch==='function') p.catch(()=>{});
+        }catch(e){}
+      };
+
+      v.onloadeddata=()=>{
+        _drawCover(s.ctx, v);
+        s.tex.needsUpdate=true;
+        tryPlay();
+      };
+      v.oncanplay=tryPlay;
+      v.onerror=()=>{ /* keep last frame */ };
+      try{ v.load(); }catch(e){}
+      tryPlay();
+      return;
+    }
+
+    // GIF (animated) — try gifler; fall back to static image if not available.
+    if(isGif){
+      s.kind='gif';
+
+      const startImage=()=>{
+        s.kind='image';
+        const img=s.img;
+        img.onload=()=>{
+          _drawCover(s.ctx, img);
+          s.tex.needsUpdate=true;
+        };
+        img.onerror=()=>{};
+        img.src=s.url;
+      };
+
+      const startGif=()=>{
+        if(typeof window.gifler !== 'function'){
+          startImage();
+          return;
+        }
+        s.gifActive=true;
+        try{
+          s.gifAnim = window.gifler(s.url);
+          // gifler animates directly into our canvas
+          s.gifAnim.animate(s.canvas);
+          s.tex.needsUpdate=true;
+        }catch(e){
+          startImage();
+        }
+      };
+
+      if(window.__cybrk_gifler_ready && typeof window.__cybrk_gifler_ready.then==='function'){
+        window.__cybrk_gifler_ready.then((ok)=>{ if(ok) startGif(); else startImage(); });
+      } else {
+        startGif();
+      }
+      return;
+    }
+
+    // Static image
+    s.kind='image';
+    const img=s.img;
+    img.onload=()=>{
+      _drawCover(s.ctx, img);
+      s.tex.needsUpdate=true;
+    };
+    img.onerror=()=>{};
+    img.src=s.url;
+  }
+
+  // Update video/gif textures (throttled to ~30 fps per surface)
+  function tick(ts){
+    const now = performance.now();
+    for(const key of Object.keys(SURF)){
+      const s=SURF[key];
+      if(!s || !s.applied) continue;
+
+      // Video frame pull
+      if(s.videoActive && s.video && s.video.readyState>=2){
+        if(now - s.lastUpd >= 33){
+          s.lastUpd = now;
+          _drawCover(s.ctx, s.video);
+          s.tex.needsUpdate=true;
+        }
+      }
+
+      // GIF: mark texture updated (gifler draws to canvas itself)
+      if(s.gifActive){
+        if(now - s.lastUpd >= 33){
+          s.lastUpd = now;
+          s.tex.needsUpdate=true;
+        }
+      }
+    }
+  }
+
+  return { init, pick, clear, tick };
+})();
+
+// Allow inline HTML onclick usage
+window.MediaSkins = MediaSkins;
+
+function initMediaSkins(){
+  try{ MediaSkins.init(); }catch(e){}
 }
 
 // ── BRICK POOL ────────────────────────────────────────────────────────────────
@@ -1953,9 +2663,12 @@ function sync3D(){
   const p2=.5+.5*Math.sin(t*1.7+.9);
 
   // ⚡ EPIC: Update shockwaves, lightning, ambient music
-  updateShockwaves(_lastDT||1);
-  updateLightning();
-  tickAmbientMusic(_lastDT||1);
+  if(state!=='paused'){
+    const __dt3 = (_lastDT||1);
+    updateShockwaves(__dt3);
+    updateLightning();
+    tickAmbientMusic(__dt3);
+  }
 
   // ── Skybox follows camera — TRUE panoramic ───────────────
   // The sphere is always centered on the camera, so you're
@@ -1963,8 +2676,10 @@ function sync3D(){
   // orientation stays fixed, creating true parallax.
   skyboxMesh.position.copy(camera.position);
   // Very slow independent drift for atmosphere
-  skyboxMesh.rotation.y+=0.000055;
-  skyboxMesh.rotation.x+=0.000018;
+  if(state!=='paused'){
+    skyboxMesh.rotation.y+=0.000055;
+    skyboxMesh.rotation.x+=0.000018;
+  }
 
   // ── Auto-orbit in menu/end screens ───────────────────────
   if(['menu','levelComplete','gameOver','victory'].includes(state)&&orbitPauseTimer<=0){
@@ -1974,7 +2689,7 @@ function sync3D(){
   // ── Camera orbit & ball tracking ─────────────────────────
   if(orbitPauseTimer>0)orbitPauseTimer--;
 
-  const inGame=state==='playing'||state==='launch';
+  const inGame=state==='playing'||state==='launch'||state==='paused';
   if(inGame && camMode==='cockpit'){
     // Dynamically adjust FOV for immersion
     const targetFOV=AP.fast>0?88:AP.slow>0?68:78;
@@ -2710,10 +3425,11 @@ function drawVictory(){
 
 // ── Unified click/tap handler ─────────────────────────────────────────────────
 function handleClick(cx,cy){
+  if(typeof uiIsBlocking==='function' && uiIsBlocking()) return;
   getAC();
   if(state==='menu'){if(cy>GH/2+82&&cy<GH/2+144&&cx>GW/2-127&&cx<GW/2+127)startGame();return;}
   if(state==='gameOver'||state==='victory'){if(cy>GH/2+112&&cy<GH/2+166)startGame();return;}
-  if(state==='paused'){state='playing';return;}
+  if(state==='paused'){return;}
   if(state==='launch'){launchBall();return;}
   if(state==='playing'&&AP.magnet>0){releaseCaught();return;}
 }
@@ -2721,7 +3437,56 @@ function handleClick(cx,cy){
 // ═════════════════════════════════════════════════════════════════════════════
 // INPUT
 // ═════════════════════════════════════════════════════════════════════════════
+
+// ─────────────────────────────────────────────────────────────
+// UI / FILE-PICKER CLICK-GUARD (prevents accidental launch/resume)
+// ─────────────────────────────────────────────────────────────
+let __uiBlockUntil = 0;      // ms timestamp (Date.now)
+let __mediaPanelOpen = false;
+let __mediaPicking = false;
+
+function uiBlock(ms){
+  const add = (ms||0);
+  const t = Date.now() + add;
+  if(t > __uiBlockUntil) __uiBlockUntil = t;
+}
+function uiIsBlocking(){
+  return !!__mediaPanelOpen || !!__mediaPicking || (Date.now() < __uiBlockUntil);
+}
+
+// When returning from Android file picker, browsers often emit a "ghost" click.
+// Block inputs for a moment whenever page regains focus/visibility.
+document.addEventListener('visibilitychange', ()=>{
+  if(!document.hidden){
+    uiBlock(650);
+    __mediaPicking = false;
+  }
+}, false);
+window.addEventListener('focus', ()=>{
+  uiBlock(650);
+  __mediaPicking = false;
+}, false);
+
+function isUIEvent(e){
+  try{
+    const t = e && e.target;
+    if(!t) return false;
+
+    // Anything inside our UI chrome is a UI event.
+    if(typeof t.closest==='function'){
+      if(t.closest('#mediaPanel,#mediaBtn,#pauseBtn,#viewToggleBtn')) return true;
+    }
+
+    // Hidden media file inputs are UI, too (they can trigger ghost clicks on mobile).
+    if(t.matches && t.matches('input[type="file"][data-media-skin-input="1"]')) return true;
+
+    return false;
+  }catch(err){ return false; }
+}
+
 function onMD(e){
+  if(uiIsBlocking()) return;
+  if(isUIEvent(e)) return;
   if(e.button===2){
     rightDragActive=true;rightDragLX=e.clientX;rightDragLY=e.clientY;
     e.preventDefault();return;
@@ -2760,12 +3525,16 @@ function onMU(e){
   dragMoved=false; // FIX: always reset so next click is never blocked
 }
 function onCK(e){
+  if(uiIsBlocking()) return;
+  if(isUIEvent(e)) return;
   // Suppress synthetic click fired by browser after touchend (300-500ms ghost click)
   if(Date.now()-lastTouchEndTime<600)return;
   if(dragMoved)return;
   const g=c2g(e.clientX,e.clientY);handleClick(g.x,g.y);
 }
 function onWheel(e){
+  if(uiIsBlocking()) return;
+  if(isUIEvent(e)) return;
   camR+=e.deltaY*.8;camR=Math.max(500,Math.min(2200,camR));orbitPauseTimer=120;
 }
 function toggleCamMode(){
@@ -2840,14 +3609,64 @@ function toggleCamMode(){
   }
 }
 
+
+// ─────────────────────────────────────────────────────────────
+// ⏸️ PAUSE (RIGHT SIDE) — freezes gameplay + audio
+// - Preserves prior state (playing/launch/menu/etc.)
+// - Prevents time/physics from advancing while paused
+// ─────────────────────────────────────────────────────────────
+let pausePrevState='playing';
+let __pauseBtnLast=null;
+
+function _updatePauseBtn(){
+  const b=$id('pauseBtn');
+  if(!b) return;
+  const isPaused = (state==='paused');
+  b.classList.toggle('on', isPaused);
+  b.setAttribute('aria-pressed', isPaused ? 'true' : 'false');
+  b.textContent = isPaused ? '▶ RESUME' : '⏸ PAUSE';
+}
+
+function _syncPauseBtn(){
+  const p=(state==='paused');
+  if(p===__pauseBtnLast) return;
+  __pauseBtnLast=p;
+  _updatePauseBtn();
+}
+
+function resumeFromPause(){
+  if(state!=='paused') return;
+  state = (pausePrevState && pausePrevState!=='paused') ? pausePrevState : 'playing';
+  try{ if(audioCtx && audioCtx.state==='suspended') audioCtx.resume(); }catch(e){}
+  _updatePauseBtn();
+}
+
+function setPaused(on){
+  const want = !!on;
+  if(want){
+    if(state==='paused') return;
+    pausePrevState = state;
+    state='paused';
+    // Freeze audio if running (safe on mobile; resume is a user gesture)
+    try{ if(audioCtx && audioCtx.state==='running') audioCtx.suspend(); }catch(e){}
+  } else {
+    resumeFromPause();
+  }
+  _updatePauseBtn();
+}
+
+function togglePause(){
+  if(state==='paused') setPaused(false);
+  else setPaused(true);
+}
+
 function onKD(e){
   keys[e.code]=true;getAC();
-  if(e.code==='KeyP'||e.code==='Escape'){
-    if(state==='playing')state='paused';else if(state==='paused')state='playing';return;}
+  if(e.code==='KeyP'||e.code==='Escape'){ togglePause(); return; }
   if(e.code==='Space'){e.preventDefault();
     if(state==='launch')launchBall();
     else if(state==='playing'&&AP.magnet>0)releaseCaught();
-    else if(state==='paused')state='playing';
+    else if(state==='paused')resumeFromPause();
     else if(state==='menu')startGame();
     else if(state==='gameOver'||state==='victory')startGame();}
   if(e.code==='KeyR'){camTheta=0.30;camPhi=0.42;camR=1300;orbitPauseTimer=0;}
@@ -2856,16 +3675,22 @@ function onKD(e){
 function onKU(e){keys[e.code]=false;}
 
 function onTS(e){
+  if(uiIsBlocking() || isUIEvent(e)) return;
   e.preventDefault();getAC();
   if(e.touches.length===2){
+    const dx=e.touches[1].clientX-e.touches[0].clientX;
+    const dy=e.touches[1].clientY-e.touches[0].clientY;
+    const dist=Math.hypot(dx,dy);
+    const ang=Math.atan2(dy,dx);
     touch2Prev={
       cx:(e.touches[0].clientX+e.touches[1].clientX)/2,
-      cy:(e.touches[0].clientY+e.touches[1].clientY)/2};
-    pinchStartDist=Math.hypot(
-      e.touches[1].clientX-e.touches[0].clientX,
-      e.touches[1].clientY-e.touches[0].clientY);
+      cy:(e.touches[0].clientY+e.touches[1].clientY)/2,
+      dist, ang
+    };
+    pinchStartDist=dist;
     pinchStartR=camR;
-    touch1Start=null;return;
+    touch1Start=null;
+    return;
   }
   const t=e.touches[0];
   touch1Start={x:t.clientX,y:t.clientY};touch1Moved=false;
@@ -2878,29 +3703,45 @@ function onTS(e){
   }
 }
 function onTM(e){
-  e.preventDefault();
+  if(uiIsBlocking() || isUIEvent(e)) return;
+  e.preventDefault();getAC();
   if(e.touches.length===2){
-    const cx=(e.touches[0].clientX+e.touches[1].clientX)/2;
-    const cy=(e.touches[0].clientY+e.touches[1].clientY)/2;
+    const x0=e.touches[0].clientX, y0=e.touches[0].clientY;
+    const x1=e.touches[1].clientX, y1=e.touches[1].clientY;
+    const cx=(x0+x1)/2;
+    const cy=(y0+y1)/2;
+    const dx=x1-x0, dy=y1-y0;
+    const dist=Math.hypot(dx,dy);
+    const ang=Math.atan2(dy,dx);
+
     if(touch2Prev){
+      const dcx=cx-touch2Prev.cx;
+      const dcy=cy-touch2Prev.cy;
       if(camMode!=='orbit'){
-        cockpitLookOffX+=(cx-touch2Prev.cx)*1.4;
-        cockpitLookOffY+=(cy-touch2Prev.cy)*0.9;
+        cockpitLookOffX+=dcx*1.4;
+        cockpitLookOffY+=dcy*0.9;
         cockpitLookOffX=Math.max(-320,Math.min(320,cockpitLookOffX));
         cockpitLookOffY=Math.max(-180,Math.min(180,cockpitLookOffY));
       } else {
-        camTheta-=(cx-touch2Prev.cx)*.007;
-        camPhi-=(cy-touch2Prev.cy)*.004;
+        // Two-finger drag rotates, pinch zooms, twist rotates (mobile-friendly orbit)
+        camTheta-=dcx*.007;
+        camPhi  -=dcy*.004;
+
+        let dA=ang-touch2Prev.ang;
+        if(dA>Math.PI) dA-=Math.PI*2;
+        else if(dA<-Math.PI) dA+=Math.PI*2;
+        if(Math.abs(dA)>0.002) camTheta-=dA*0.9;
+
+        if(touch2Prev.dist>0 && dist>0){
+          camR=Math.max(500,Math.min(2200,camR*(touch2Prev.dist/dist)));
+        }
         orbitPauseTimer=300;
       }
+    } else {
+      pinchStartDist=dist; pinchStartR=camR;
     }
-    touch2Prev={cx,cy};
-    if(camMode==='orbit'){
-      const dist=Math.hypot(
-        e.touches[1].clientX-e.touches[0].clientX,
-        e.touches[1].clientY-e.touches[0].clientY);
-      if(pinchStartDist>0)camR=Math.max(500,Math.min(2200,pinchStartR*(pinchStartDist/dist)));
-    }
+
+    touch2Prev={cx,cy,dist,ang};
     return;
   }
   touch2Prev=null;
@@ -2922,6 +3763,10 @@ function onTM(e){
 }
 function onTE(e){
   lastTouchEndTime=Date.now(); // mark touch end to suppress synthetic click
+  if(uiIsBlocking() || isUIEvent(e)){
+    touch1Start=null; touch1Moved=false; touch2Prev=null;
+    return;
+  }
   if(e.touches.length===0)touch2Prev=null;
   if(e.changedTouches.length>0&&!touch1Moved&&touch1Start){
     const t=e.changedTouches[0];
@@ -2940,11 +3785,15 @@ function loop(ts){
   _frames++; _lastFrameMs=performance.now();
   try{
   const raw=ts-lastT;lastT=ts;
-  const dt=Math.min(raw/16.667,2.8);
+  let dt=Math.min(raw/16.667,2.8);
+  if(state==='paused') dt=0;
   _lastDT=dt;
-  timeE+=raw*.001;
+  if(state!=='paused') timeE+=raw*.001;
 
   if(state==='playing'){update(dt);}
+  else if(state==='paused'){
+    // Fully freeze gameplay while paused (no particles, no shake, no paddle drift)
+  }
   else if(state==='launch'){
     fc++;updShake(dt);updP();updST();
     const tgt=mouseX-paddle.w/2;
@@ -2958,9 +3807,11 @@ function loop(ts){
 
   if(renderer){
     try{ sync3D(); }catch(e){}
+    try{ if(state!=='paused' && window.MediaSkins) MediaSkins.tick(ts); }catch(e){}
     try{ renderer.render(scene,camera); }catch(e){}
   }
   renderHUD();
+  try{ _syncPauseBtn(); }catch(e){}
   _loopErrors=0;
   }catch(e){
     _loopErrors++;
@@ -3044,6 +3895,7 @@ function init(){
   // Hide loading screen — everything is ready
   const ls=$id('loadingScreen');
   if(ls)ls.style.display='none';
+  try{ _updatePauseBtn(); }catch(e){}
   // Render one frame immediately (prevents black if RAF is delayed)
   try{ sync3D(); if(renderer) renderer.render(scene,camera); }catch(e){}
   try{ renderHUD(); }catch(e){}
@@ -3087,6 +3939,7 @@ function init2DOnly(reason){
   // Hide loading
   const ls=$id('loadingScreen');
   if(ls) ls.style.display='none';
+  try{ _updatePauseBtn(); }catch(e){}
 
   // Small banner so you know you're in safe mode
   try{
@@ -3102,7 +3955,9 @@ function init2DOnly(reason){
 }
 
 function boot(){
-  if(window.__cybrk_booted) return;
+  
+  try{ document.documentElement.classList.add('classic-mode'); }catch(e){}
+if(window.__cybrk_booted) return;
   window.__cybrk_booted=true;
 
   const ls=$id('loadingScreen');
